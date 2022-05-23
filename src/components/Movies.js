@@ -21,13 +21,15 @@ export default class Movies extends React.Component {
 };
 const Movie = ({ data }) => (
     data.map((e, i) => (
-      <ListGroup.Item key={i}>
-        <div>
-          <img src={e.image_url}
+      <ListGroup.Item display='flex' flex-direction='row' key={i}>
+        <div display='flex' flex-direction='column'>
+          <img src={e.poster_img_url}
             alt={e.title}
+            width={300}
+            height={'auto'}
           />
         </div>
-        <div>
+        <div display='flex' flex-direction='column'>
           <h3>{e.title}</h3>
           <h4>{e.overview}</h4>
           <span>Votes: {e.total_votes} | Average Votes: {e.average_votes} | Realease Date: {e.released_on}</span>

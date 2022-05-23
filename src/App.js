@@ -43,17 +43,19 @@ export default class App extends React.Component {
     e.preventDefault();
     try {
       let input = this.state.input;
-      console.log(input);
-
       input = input.split('').map((e, i) => { return (i === 0) ? e.toUpperCase() : e }).join('');
 
-      let data = (await axios.get(`${process.env.REACT_APP_LOC_API_BASE_URL}/search.php?key=${process.env.REACT_APP_LOC_API_KEY}&city=${input}&country=USA&format=json`)).data[0];
+      let url = `${process.env.REACT_APP_LOC_API_BASE_URL}/search.php?key=${process.env.REACT_APP_LOC_API_KEY}&city=${this.state.input}&country=usa&format=json`;
+
+      let data = await axios.get(url)
+        .then(res => res.data[0])
+        .catch(err => console.log(err));
+
       console.log(data);
-      let lat = data.lat.toString();
-      let lon = data.lon.toString();
+
       this.setState({
-        lat: lat,
-        lon: lon,
+        lat: data.lat,
+        lon: data.lon,
         showMap: true,
         showForecast: true,
         showMovies: true
@@ -77,34 +79,35 @@ export default class App extends React.Component {
 
     return (
       <main>
-        <h1>City Explorer</h1>
-        <h2>Code301 -Project 02 - City Explorer</h2>
-        <article className="main">
-          <div className="left">
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Label htmlFor="cityName" >Enter a City</Form.Label>
-              <input
-                type="text"
-                placeholder="Search for city..."
-                className="form-control"
-                id="city"
-                name="city"
-                value={this.input}
-                onChange={this.handleChange}
-              />
-              <Button type="submit" value={this.input} >Explore!</Button>
-            </Form>
-            <div className="right">
-              <div className="location">
-                {this.state.showMap && <div className="map" >{getImage(this.state)}</div>}
-                {this.state.showForecast && <Forecasts lat={this.state.lat} lon={this.state.lon} />}
-              </div>
-              <div className="entertainment">
-                {this.state.showMovies && <Movies className="movies" q={this.state.input} />}
-              </div>
-            </div>
+        <header>
+          <div>
+            <h1>City Explorer</h1>
           </div>
-        </article>
+        </header>
+        <div className="main">
+          <nav className="left-nav"></nav>
+          <article>
+            <Form className="input-group" onSubmit={this.handleSubmit}>
+              <Form.Group className="form-group">
+                <input
+                  type="text"
+                  placeholder="Search for city..."
+                  className="form-input"
+                  id="city"
+                  name="city"
+                  onChange={this.handleChange}
+                />
+                <Button type="submit" value={this.input} >Explore!</Button>
+              </Form.Group>
+            </Form>
+            <div className="location">
+              {this.state.showMap && <div className="map" >{getImage(this.state)}</div>}
+              {this.state.showForecast && <Forecasts lat={this.state.lat} lon={this.state.lon} />}
+            </div>
+            {this.state.showMovies && <Movies className="movies" q={this.state.input} />}
+          </article>
+          <nav className="right-nav"></nav>
+        </div>
       </main>
     );
   }
