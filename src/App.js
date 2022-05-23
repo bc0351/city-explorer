@@ -1,10 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, ListGroup } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
 import getImage from './components/Map';
 import Forecasts from './components/Forecast';
 import Movies from './components/Movies';
+
+import './app.css';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -49,16 +51,16 @@ export default class App extends React.Component {
       console.log(data);
       let lat = data.lat.toString();
       let lon = data.lon.toString();
-        this.setState({
-          lat: lat,
-          lon: lon,
-          showMap: true,
-          showForecast: true,
-          showMovies: true
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      this.setState({
+        lat: lat,
+        lon: lon,
+        showMap: true,
+        showForecast: true,
+        showMovies: true
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   handleChange = (e) => {
@@ -72,28 +74,38 @@ export default class App extends React.Component {
   };
 
   render() {
-    
+
     return (
-      <>
+      <main>
         <h1>City Explorer</h1>
         <h2>Code301 -Project 02 - City Explorer</h2>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Label htmlFor="cityName" >Enter a City</Form.Label>
-          <input
-            type="text"
-            placeholder="Search for city..."
-            className="form-control"
-            id="city"
-            name="city"
-            value={this.input}
-            onChange={this.handleChange}
-          />
-          <Button type="submit" value={this.input} >Explore!</Button>
-        </Form>
-        {this.state.showMap && <div className="map" >{getImage(this.state)}</div> }
-        {this.state.showForecast && <Forecasts lat={this.state.lat} lon={this.state.lon} />}
-        {this.state.showMovies && <Movies className="movies" q={this.state.input} /> }
-      </>
+        <article className="main">
+          <div className="left">
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Label htmlFor="cityName" >Enter a City</Form.Label>
+              <input
+                type="text"
+                placeholder="Search for city..."
+                className="form-control"
+                id="city"
+                name="city"
+                value={this.input}
+                onChange={this.handleChange}
+              />
+              <Button type="submit" value={this.input} >Explore!</Button>
+            </Form>
+            <div className="right">
+              <div className="location">
+                {this.state.showMap && <div className="map" >{getImage(this.state)}</div>}
+                {this.state.showForecast && <Forecasts lat={this.state.lat} lon={this.state.lon} />}
+              </div>
+              <div className="entertainment">
+                {this.state.showMovies && <Movies className="movies" q={this.state.input} />}
+              </div>
+            </div>
+          </div>
+        </article>
+      </main>
     );
   }
 }
